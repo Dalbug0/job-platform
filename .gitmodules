@@ -1,0 +1,3 @@
+[submodule "job_aggregator"]
+	path = job_aggregator
+	url = https://REMOVED_SECRET@github.com/Dalbug0/job_aggregator.git
