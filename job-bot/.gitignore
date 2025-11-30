@@ -63,7 +63,3 @@ coverage.xml
 .mypy_cache/
 .dmypy.json
 dmypy.json
-
-# Личное
-Node.txt
-secrets.txt
