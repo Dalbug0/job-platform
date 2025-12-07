@@ -1,6 +1,6 @@
 [submodule "job-bot"]
 	path = job-bot
-	url = https://REMOVED_SECRET@github.com/Dalbug0/job-bot.git
+	url = https://@github.com/Dalbug0/job-bot.git
 [submodule "job_aggregator"]
 	path = job_aggregator
-	url = https://REMOVED_SECRET@github.com/Dalbug0/job_aggregator.git
+	url = https://@github.com/Dalbug0/job_aggregator.git
