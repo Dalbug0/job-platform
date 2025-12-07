@@ -22,7 +22,9 @@ services:
     build: ./job_aggregator
     container_name: job_api
     restart: unless-stopped
-    env_file: .env.dev
+    env_file: 
+      - .env.dev
+      - .env.hh.dev
     ports:
       - "8000:8000"
     depends_on:
