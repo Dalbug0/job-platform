@@ -1,8 +1,0 @@
-services:
-  job-bot:
-    build: .
-    container_name: telegram_bot
-    restart: unless-stopped
-    env_file: .env.dev
-    volumes:
-      - .:/app
