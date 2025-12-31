@@ -1,0 +1,87 @@
+# docker-compose.test.yml - Тестовое окружение для job-platform
+# Изолированное пространство для интеграционных тестов
+
+services:
+  # Тестовая база данных
+  test_db:
+    image: postgres:15
+    container_name: job_platform_test_db
+    restart: "no"  # Не перезапускать автоматически
+    ports:
+      - "5433:5432"  # Отдельный порт для тестов
+    environment:
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_pass
+      POSTGRES_DB: job_platform_test
+    volumes:
+      - test_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test_user -d job_platform_test"]
+      interval: 5s
+      retries: 5
+      start_period: 10s
+      timeout: 3s
+    networks:
+      - test_network
+
+  # Тестовый API (job_aggregator)
+  test_api:
+    build: ./job_aggregator
+    container_name: job_platform_test_api
+    restart: "no"
+    env_file:
+      - .env.dev
+      - .env.hh.dev
+    environment:
+      # Переопределение для тестового режима
+      APP_ENV: test
+      POSTGRES_HOST: test_db
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_pass
+      POSTGRES_DB: job_platform_test
+    ports:
+      - "8001:8000"  # Отдельный порт для тестов
+    depends_on:
+      test_db:
+        condition: service_healthy
+    volumes:
+      - ./job_aggregator/migrations:/app/migrations
+      - ./job_aggregator:/app
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/docs').raise_for_status()"]
+      interval: 10s
+      retries: 6
+      start_period: 30s
+      timeout: 10s
+    networks:
+      - test_network
+
+  # Тестовый бот (опционально, для полных интеграционных тестов)
+  test_bot:
+    build: ./job-bot
+    container_name: job_platform_test_bot
+    restart: "no"
+    env_file: .env.dev
+    environment:
+      # Переопределение для тестового режима
+      API_URL: http://test_api:8000/api/v1
+    depends_on:
+      test_api:
+        condition: service_healthy
+    volumes:
+      - ./job-bot:/app
+    # Бот не запускается автоматически в тестах, только API
+    command: echo "Bot container ready for testing"
+    networks:
+      - test_network
+
+volumes:
+  test_postgres_data:
+    driver: local
+
+networks:
+  test_network:
+    driver: bridge
+    # Изоляция тестовой сети от основной
+
