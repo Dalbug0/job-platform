@@ -1,69 +1,74 @@
+# Environment files (NEVER commit these!)
+.env
+.env.*
+!.env.example
+
 # Python
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
+*$py.class
+*.so
 .Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
 .venv
 venv/
 env/
-.pytest_cache/
-.mypy_cache/
-.coverage
-htmlcov/
-.tox/
-.nox/
+ENV/
 
 # IDE
 .vscode/
-.cursor/
-
-# Envs
-.env
-.env.*
-
-# Docker
-*.log
-docker-compose.override.yml
+.idea/
+*.swp
+*.swo
+*~
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Test files
-create_tables.py
-seed_data.py
+# Docker
+docker-compose.override.yml
+
+# Logs
+*.log
+logs/
+
+# Test coverage
+.coverage
+htmlcov/
+.pytest_cache/
+.coverage.*
+coverage.xml
 
 # Temporary files
-НеЗабудь.txt
 *.tmp
 *.temp
+.cache/
 
-# Database
+# Database files (local development)
 *.db
 *.sqlite
 *.sqlite3
 
-# Logs
-logs/
-*.log
+# IDE
+.cursor/
 
-# Coverage reports
-.coverage
-htmlcov/
-coverage.xml
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# pytest
-.pytest_cache/
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Личное
-Node.txt
+# You shouldn't see that, just belive me
 secrets.txt
+Node.txt
