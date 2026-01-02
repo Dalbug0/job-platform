@@ -158,7 +158,7 @@ class IntegrationTestRunner:
                 "check_function": self._check_database
             },
             "test_api": {
-                "url": "http://localhost:8001/docs",
+                "url": "http://localhost:8001/api/v1/docs",
                 "name": "API",
                 "check_function": self._check_api
             }
@@ -194,11 +194,14 @@ class IntegrationTestRunner:
 
     def _check_database(self, url: str) -> bool:
         """Проверка готовности базы данных"""
-        # Проверяем через API healthcheck
+        # Проверяем напрямую через pg_isready
         try:
-            response = requests.get("http://localhost:8001/docs", timeout=5)
-            return response.status_code == 200
-        except:
+            result = subprocess.run([
+                "docker", "exec", "job_platform_test_db",
+                "pg_isready", "-U", "test_user", "-d", "job_platform_test"
+            ], capture_output=True, timeout=5)
+            return result.returncode == 0
+        except (subprocess.TimeoutExpired, subprocess.CalledProcessError):
             return False
 
     def _check_api(self, url: str) -> bool:
@@ -386,7 +389,7 @@ class IntegrationTestRunner:
             return False
 
         # Ожидание сервисов
-        if not self.wait_for_services():
+        if not self.wait_for_services(180):  # 3 минуты вместо 5
             self.cleanup_environment()
             return False
 
