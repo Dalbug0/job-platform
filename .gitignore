@@ -65,6 +65,7 @@ coverage.xml
 *.db
 *.sqlite
 *.sqlite3
+postgres_data/
 
 # IDE
 .cursor/
