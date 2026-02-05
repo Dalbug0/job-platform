@@ -15,7 +15,7 @@
 
 - Docker и Docker Compose
 - Python 3.11+
-- `.env.dev` и `.env.hh.dev` файлы (получить у администратора)
+- Файлы окружения: `.env`, `.env.dev`, `.env.hh.dev`
 
 ### Запуск в режиме разработки
 
@@ -65,24 +65,60 @@ docker-compose -f docker-compose.test.yml down -v
 
 ## Переменные окружения
 
-### Основные
+### Основные переменные (.env)
 
-- `POSTGRES_HOST` - хост базы данных
 - `POSTGRES_PORT` - порт базы данных
 - `POSTGRES_USER` - пользователь БД
 - `POSTGRES_PASSWORD` - пароль БД
 - `POSTGRES_DB` - имя базы данных
+- `LOG_LEVEL` — уровень логирования. Возможные значения:
+  - `"CRITICAL"`
+  - `"ERROR"`
+  - `"WARNING"`
+  - `"INFO"`
+  - `"DEBUG"`
 
-### Bot
+**Пример файла .env:**
+```bash
+POSTGRES_PORT=5432
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=password
+POSTGRES_DB=job_platform
+LOG_LEVEL=INFO
+```
+
+### Переменные разработки (.env.dev)
 
 - `BOT_TOKEN` - токен Telegram бота
-- `API_URL` - URL API сервера
+- `API_URL` - URL API сервера (для Docker: `http://api:8000`)
+- `POSTGRES_HOST` - хост базы данных
+- `SECRET_KEY` - секретный ключ для JWT
+- `DISABLE_SCHEDULER` - отключение планировщика (1/0)
+- `DISABLE_MIGRATIONS` - отключение миграций (1/0)
 
-### HH.ru Integration
+**Пример файла .env.dev:**
+```bash
+BOT_TOKEN="your_bot_token_here"
+API_URL=http://api:8000
+POSTGRES_HOST=db  # имя сервиса базы данных внутри docker-compose (у вас также будет именно так)
+SECRET_KEY="your_secret_key_here"
+DISABLE_SCHEDULER=1
+DISABLE_MIGRATIONS=1
+LOG_LEVEL=DEBUG
+```
+
+### Переменные HH.ru (.env.hh.dev)
 
 - `HH_CLIENT_ID` - ID приложения HH.ru
 - `HH_CLIENT_SECRET` - секрет приложения HH.ru
 - `HH_REDIRECT_URI` - URI перенаправления
+
+**Пример файла .env.hh.dev:**
+```bash
+HH_CLIENT_ID=your_hh_client_id
+HH_CLIENT_SECRET=your_hh_client_secret
+HH_REDIRECT_URI=http://localhost:8000/auth/callback
+```
 
 ## Разработка
 
@@ -93,6 +129,7 @@ job-platform/
 ├── docker-compose.yml          # Основное окружение
 ├── docker-compose.test.yml     # Тестовое окружение
 ├── run_integration_tests.py    # Скрипт интеграционных тестов
+├── .env                        # Основные переменные окружения
 ├── .env.dev                    # Переменные разработки
 ├── .env.hh.dev                 # HH.ru переменные разработки
 ├── job_aggregator/             # API сервер
@@ -134,6 +171,7 @@ python run_integration_tests.py --verbose
 ## Поддержка
 
 При проблемах:
+
 1. Проверьте логи: `docker-compose logs`
 2. Запустите тесты: `python run_integration_tests.py`
 3. Проверьте переменные окружения
